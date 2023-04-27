@@ -2,7 +2,6 @@ import express from "express";
 import mongoose from "mongoose";
 import userModel from "./userModel.js";
 import { v4 as uuidv4 } from 'uuid';
-import routes from "./routes.js"
 import * as dotenv from 'dotenv'
 dotenv.config()
 
@@ -18,12 +17,6 @@ var app = express();
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use("/users", routes)
-
-var users = [];
-
-app.get("/allUsers", (req, res, next) => {
-  res.json(users);
-});
 
 app.post("/userConnect", (req, res, next) => {
   var username = req.body.username;
@@ -54,10 +47,6 @@ app.post("/userConnect", (req, res, next) => {
       }
     })
     .catch(error => res.status(400).json({error}))
-  users.push({
-    username: username,
-    uuid: newUserUUID
-  })
 });
 
 app.post("/setNewTimer", (req, res, next) => {
