@@ -6,17 +6,15 @@ import * as dotenv from 'dotenv'
 dotenv.config()
 
 var url = process.env.DBURL;
-
 mongoose.connect(url,
   { useNewUrlParser: true,
     useUnifiedTopology: true })
   .then(() => console.log('Connexion à MongoDB réussie !'))
-  .catch(() => console.log('Connexion à MongoDB échouée !'));
+  .catch(err => console.log('Connexion à MongoDB échouée !\n'+err));
 
 var app = express();
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-app.use("/users", routes)
 
 app.post("/userConnect", (req, res, next) => {
   var username = req.body.username;
@@ -58,6 +56,23 @@ app.post("/setNewTimer", (req, res, next) => {
     .then(res.sendStatus(200))
     .catch(error => res.send(400).json({error}))
 })
+
+app.get("/easyRank", (req, res, next) => {
+  const easyRank = userModel.find({}).sort({"easyTime": 1}).toJSON();
+  res.json(easyRank);
+})
+
+app.get("/mediumRank", (req, res, next) => {
+  const mediumRank = userModel.find({}).sort({"mediumTime": 1}).toJSON();
+  res.json(mediumRank);
+})
+
+app.get("/hardRank", (req, res, next) => {
+  const hardRank = userModel.find({}).sort({"hardTime": 1}).toJSON();
+  res.json(hardRank);
+})
+
+
 
 app.listen(3000, () => {
   console.log("Server running on port 3000");
